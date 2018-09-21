@@ -11,6 +11,18 @@ Either run
 
 ```
 php composer.phar require --prefer-dist pahan23456/yii2-monitoring "*"
+
+После установки расширения необходимо выполнить миграцию:
+
+ php yii migrate --migrationPath=@pahan23456/monitoring/src/migrations
+ 
+ Для того, чтобы компонент был доступен глобально из Yii::$app, пропишем его в конфиге:
+ 
+ 'components' => [
+         'monitoring' => [
+             'class' => '\pahan23456\monitoring\Monitoring'
+         ],
+        ]
 ```
 
 or add
@@ -21,11 +33,16 @@ or add
 
 to the require section of your `composer.json` file.
 
-
 Usage
 -----
-
-Once the extension is installed, simply use it in your code by  :
-
-```php
-<?= \pahan23456\monitoring\AutoloadExample::widget(); ?>```
+### 3 параметра, 2 из которых обязательны 
+### 1 параметр - Название события
+### 2 параметр - Приоритет события
+### 3 параметр - Массив вспомогательных данных
+### мониторинг события (старт выполнения события)
+Yii::$app->monitoring->start('Начало события', 2,);
+<!-- Здесь код события -->
+### в случае успеха
+Yii::$app->monitoring->success('Событие успешно выполнено', 2,['success' => $success]);
+### в случае ошибки 
+Yii::$app->monitoring->fail('Событие выполнилось с ошибкой', 2,['fail' => $fails]);
