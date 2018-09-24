@@ -4,30 +4,31 @@ namespace pahan23456\monitoring\src\models;
 use yii\db\ActiveRecord;
 
 /**
- * This is the model class for table "{{monitoring}}".
+ * This is the model class for table "monitoring_detail".
  *
  * @property integer $id
  * @property string $message
  * @property string $status
  * @property string $data
- * @property integer $priority
  * @property string $creationDate
  * @property integer $userId
+ * @property integer $eventId
  *
  */
-class Monitoring extends ActiveRecord
+class Detail extends ActiveRecord
 {
     const STATUS_START = 'start';
     const STATUS_IN_PROCESS = 'inProcess';
     const STATUS_SUCCESS = 'success';
+    const STATUS_WITH_ERROR = 'withError';
     const STATUS_FAIL = 'fail';
-    
+
     /**
      * @inheritdoc
      */
     public static function tableName()
     {
-        return 'monitoring';
+        return 'monitoring_detail';
     }
 
     /**
@@ -36,7 +37,7 @@ class Monitoring extends ActiveRecord
     public function rules()
     {
         return [
-            [['priority', 'userId'], 'integer'],
+            [['userId', 'eventId'], 'integer'],
             [['message'], 'string', 'max' => 255],
             [['status'], 'string', 'max' => 10],
             [['creationDate'], 'safe'],
@@ -54,9 +55,9 @@ class Monitoring extends ActiveRecord
             'message'      => 'Сообщения события',
             'status'       => 'Статус события',
             'data'         => 'Вспомогательная информация JSON',
-            'priority'     => 'Приоритет события',
             'userId'       => 'Идентификатор пользователя',
             'creationDate' => 'Дата создания события',
+            'eventId'      => 'Идентификатор события',
         ];
     }
 }

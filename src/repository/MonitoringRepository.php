@@ -1,29 +1,50 @@
 <?php
 namespace pahan23456\monitoring\src\repository;
 
-use pahan23456\monitoring\src\models\Monitoring;
+use pahan23456\monitoring\src\models\Detail;
 use yii;
 
 class MonitoringRepository implements MonitoringRepositoryInterface
 {
-   public function create($message, $status, $priority = 1, $data = null)
+   public function create($message, $status, $data = null, $eventId = null)
    {
-       $monitoring = new Monitoring();
-       $monitoring->message = $message;
-       $monitoring->status = $status;
-       $monitoring->creationDate = date('Y.m.d H:i:s');
-       $monitoring->priority = $priority;
+       $detail = new Detail();
+       $detail->message = $message;
+       $detail->status = $status;
+       $detail->creationDate = date('Y.m.d H:i:s');
 
        if (is_array($data)) {
-           $monitoring->data = json_encode($data);
-       }
-       if (!Yii::$app->user->isGuest) {
-           $monitoring->userId = Yii::$app->user->id;
+           $detail->data = json_encode($data);
        }
 
-       if (!$monitoring->validate()) {
-          return false;
+       if (!Yii::$app->user->isGuest) {
+           $detail->userId = Yii::$app->user->id;
        }
-       $monitoring->save(false);
+       $this->setEventId($eventId, $detail);
+
+       if ($detail->save()) {
+           if ($detail->status === Detail::STATUS_START) {
+               $detail->eventId = $detail->id;
+               $detail->save();
+           }
+       } else {
+           return false;
+       }
+
+       return $detail->id;
+   }
+
+    /**
+     * Устанаваливает идентификатор родительского события текущему
+     *
+     * @param $eventId
+     * @param $monitoring
+     */
+   private function setEventId($eventId, &$monitoring)
+   {
+       if ($monitoring->status !== Detail::STATUS_START) {
+           $event = Detail::findOne(['id' => $eventId]);
+           $monitoring->eventId = $event->id;
+       }
    }
 }
