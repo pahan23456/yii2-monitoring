@@ -46,11 +46,20 @@ class Command extends ActiveRecord
         ];
     }
 
+    /**
+     * Вспомогательная таблица для связи ManyToMany
+     * @return \yii\db\ActiveQuery
+     */
     public function getCommandGroup()
     {
         return $this->hasMany(UserCommandGroup::className(), ['commandId' => 'id']);
     }
 
+    /**
+     * Возвращает пользователей, которые ответствены за выполнение команды
+     *
+     * @return \yii\db\ActiveQuery
+     */
     public function getUsers()
     {
         return $this->hasMany(User::className(), ['id' => 'userId'])->via('commandGroup');

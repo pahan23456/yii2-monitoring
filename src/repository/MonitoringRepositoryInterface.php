@@ -6,10 +6,12 @@ interface MonitoringRepositoryInterface
     /**
      * Создание события
      *
-     * @param $message
      * @param $status
-     * @param null $data
+     * @param $message
+     * @param  $data
+     * @param  $eventId
+     * @param  $command
      * @return mixed
      */
-    public function create($message, $status, $data = null, $eventId = null);
+    public function create($status, $message = null, $data = null, $eventId = null, $command = null);
 }

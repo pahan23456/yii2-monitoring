@@ -47,11 +47,20 @@ class Group extends ActiveRecord
         ];
     }
 
+    /**
+     * Вспомогательная таблица для связи ManyToMany
+     * @return \yii\db\ActiveQuery
+     */
     public function getGroupUser()
     {
         return $this->hasMany(UserCommandGroup::className(), ['groupId' => 'id']);
     }
 
+    /**
+     * Возвращает пользователей, которые состоят в текущей группе
+     *
+     * @return \yii\db\ActiveQuery
+     */
     public function getUsers()
     {
         return $this->hasMany(User::className(), ['id' => 'userId'])->via('groupUser');

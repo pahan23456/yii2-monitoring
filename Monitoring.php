@@ -1,17 +1,16 @@
 <?php
 namespace pahan23456\monitoring;
 
-
 use pahan23456\monitoring\src\models\Detail;
-use pahan23456\monitoring\src\models\Group;
-use pahan23456\monitoring\src\models\User;
+use pahan23456\monitoring\src\notifications\NotificationFactory;
 use pahan23456\monitoring\src\repository\RepositoryFactory;
 use yii\base\Component;
+use yii;
 
 class Monitoring extends Component
 {
-   public $monitoringRepository;
-    
+    public $monitoringRepository;
+
     public function init()
     {
         parent::init();
@@ -21,15 +20,17 @@ class Monitoring extends Component
     /**
      * Создание события со статусом "start", что сигнализирует о старте события
      *
-     * @param $message - сообщение события
-     * @param $priority - приоритет события
+     * @param null $command - команда
+     * @param null $message - сообщение события
      * @param null $data - вспомогательная информация
+     *
      * @return int  $evenId -  идентификатор события
      */
-    public function start($message, $data = null)
+    public function start($command, $message, $data = null)
     {
-      $eventId = $this->monitoringRepository->create($message, Detail::STATUS_START, $data);
-      return $eventId;
+      $detail = $this->monitoringRepository->create(Detail::STATUS_START, $message, $data, null, $command);
+
+      return $detail->id;
     }
 
     /**
@@ -41,7 +42,7 @@ class Monitoring extends Component
      */
     public function inProcess($eventId, $message, $data = null)
     {
-        $this->monitoringRepository->create($message, Detail::STATUS_IN_PROCESS, $data, $eventId);
+        $this->monitoringRepository->create(Detail::STATUS_IN_PROCESS, $message, $data, $eventId);
     }
 
     /**
@@ -53,7 +54,7 @@ class Monitoring extends Component
      */
     public function success($eventId, $message, $data = null)
     {
-        $this->monitoringRepository->create($message, Detail::STATUS_SUCCESS, $data, $eventId);
+        $this->monitoringRepository->create(Detail::STATUS_SUCCESS, $message, $data, $eventId);
     }
 
     /**
@@ -65,7 +66,8 @@ class Monitoring extends Component
      */
     public function fail($eventId, $message, $data = null)
     {
-        $this->monitoringRepository->create($message, Detail::STATUS_FAIL, $data, $eventId);
+        $detail = $this->monitoringRepository->create(Detail::STATUS_FAIL, $message, $data, $eventId);
+        $this->sendNotification($detail);
     }
 
     /**
@@ -77,6 +79,19 @@ class Monitoring extends Component
      */
     public function withError($eventId, $message, $data = null)
     {
-        $this->monitoringRepository->create($message, Detail::STATUS_WITH_ERROR, $data, $eventId);
+        $this->monitoringRepository->create(Detail::STATUS_WITH_ERROR, $message, $data, $eventId);
+    }
+
+    /**
+     * Отправка уведомлений на email и в чат телеграма
+     *
+     * @param Detail $detail
+     */
+    private function sendNotification(Detail $detail)
+    {
+        $emailNotification = NotificationFactory::createTelegramNotification($detail);
+        $telegramNotification = NotificationFactory::createTelegramNotification($detail);
+        $emailNotification->send();
+        $telegramNotification->send();
     }
 }

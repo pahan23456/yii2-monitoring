@@ -1,26 +1,30 @@
 <?php
 namespace pahan23456\monitoring\src\repository;
 
+use pahan23456\monitoring\src\models\Command;
 use pahan23456\monitoring\src\models\Detail;
 use yii;
 
 class MonitoringRepository implements MonitoringRepositoryInterface
 {
-   public function create($message, $status, $data = null, $eventId = null)
+   public function create($status, $message = null, $data = null, $eventId = null, $command = null)
    {
        $detail = new Detail();
        $detail->message = $message;
        $detail->status = $status;
        $detail->creationDate = date('Y.m.d H:i:s');
 
-       if (is_array($data)) {
+       if (is_array($data))
            $detail->data = json_encode($data);
-       }
 
-       if (!Yii::$app->user->isGuest) {
+       if (!Yii::$app->user->isGuest)
            $detail->userId = Yii::$app->user->id;
-       }
-       $this->setEventId($eventId, $detail);
+
+       if (!$this->setCommandId($command, $detail))
+           return false;
+
+       if (!$this->setEventId($eventId, $detail))
+           return false;
 
        if ($detail->save()) {
            if ($detail->status === Detail::STATUS_START) {
@@ -31,7 +35,7 @@ class MonitoringRepository implements MonitoringRepositoryInterface
            return false;
        }
 
-       return $detail->id;
+       return $detail;
    }
 
     /**
@@ -40,11 +44,37 @@ class MonitoringRepository implements MonitoringRepositoryInterface
      * @param $eventId
      * @param $monitoring
      */
-   private function setEventId($eventId, &$monitoring)
+   private function setEventId($eventId, &$detail)
    {
-       if ($monitoring->status !== Detail::STATUS_START) {
+       if ($detail->status !== Detail::STATUS_START) {
            $event = Detail::findOne(['id' => $eventId]);
-           $monitoring->eventId = $event->id;
+
+           if (!isset($event)) {
+               return false;
+           }
+           $detail->eventId = $event->id;
+           $detail->commandId = $event->commandId;
        }
+       return true;
+   }
+
+    /**
+     * Устанавливает идентификатор команды, при создании события
+     *
+     * @param $command
+     * @param $detail
+     * @return bool
+     */
+   private function setCommandId($command, &$detail)
+   {
+       if ($detail->status === Detail::STATUS_START) {
+           $commandDb = Command::findOne(['command' => $command]);
+           
+           if (!isset($commandDb)) {
+               return false;
+           }
+           $detail->commandId = $commandDb->id;
+       }
+       return true;
    }
 }
