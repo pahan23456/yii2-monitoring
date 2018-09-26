@@ -34,14 +34,19 @@
                             <table width="600" cellpadding="0" cellspacing="0" border="0" class="container">
                                 <tr>
                                     <td align="center" valign="top" bgcolor="#6200EE">
-                                        <p class="header" style="color: #ffffff; font-size: 26px;">Мониторинг сайта <a style="color: #ff6e6e; font-size: 19px; text-decoration: none;" href="http://<?= $_SERVER['SERVER_NAME'] ?>"><?= $_SERVER['SERVER_NAME'] ?></a> </p>
+                                        <p class="header" style="color: #ffffff; font-size: 25px;">Мониторинг сайта <br>
+                                        <a style="color: #ffffff; font-size: 19px; text-decoration: none;" href="http://<?= Yii::$app->id ?>"><?= Yii::$app->id  ?></a></p>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>
                                         <table width="100%" style="background:#fff;">
-                                            <tr>
+                                            <tr style="background:#e0e0e0;">
                                                 <td>Команда</td>
+                                                <td><?= $detail->command->description ?></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Название команды</td>
                                                 <td><?= $detail->command->command ?></td>
                                             </tr>
                                             <tr style="background:#e0e0e0;">
@@ -88,7 +93,7 @@
                             <p style="color:#909090; font-size: 12px;">Вы получили данное уведомление, так как указаны в списке рассылке уведомлений по команде "<?= $detail->command->description ?>".
                                 Настроить уведомления вы можете в <a href="http://content2.retail.ru">Админ-панели</a>
                             </p>
-                            <p>Мониторинг сайта <a href="http://<?= $_SERVER['SERVER_NAME'] ?>/"><?= $_SERVER['SERVER_NAME'] ?></a></p>
+                            <p>Мониторинг сайта <a href="http://<?= Yii::$app->id ?>/"><?= Yii::$app->id ?></a></p>
                         </td>
                     </tr>
                 </table>
@@ -99,26 +104,3 @@
 </body>
 </html>
 
-
-<!--<p>-->
-<!--    Здравствуйте, --><?//= $user->initials ?><!--! Вам было прислано данное уведомление, так как Вы являеетесь ответственным-->
-<!--    за выполнение команды <b>--><?//= $detail->command->command ?><!-- - "--><?//= $detail->command->description ?><!--"</b>.-->
-<!--    <br>-->
-<!--    Во время выполнения команды - <b>--><?//= $detail->command->description ?><!--</b>, возникла ошибка: <b>--><?//= $detail->message ?><!--</b>. <br><br>-->
-<!--    <b>Подробная информация:</b><br>-->
-<!--    <b>Выполнеяемая команда</b>: --><?//= $detail->command->command ?><!-- <br>-->
-<!--    <b>Описание команды</b>: --><?//= $detail->command->description ?><!-- <br>-->
-<!--    <b>Статус события</b>: --><?//= $detail->status ?><!-- <br>-->
-<!--    <b>Сообщение события</b>: --><?//= $detail->message ?><!-- <br>-->
-<!--    <b>Идентификатор события</b>: --><?//= $detail->eventId ?><!-- <br>-->
-<!--    <b>Время события</b>: --><?//= $detail->creationDate ?><!-- <br>-->
-<!---->
-<!--    --><?php //if (!empty($detail->data)): ?>
-<!--        <b>Дополнительная информация</b>: --><?//= $detail->data ?><!-- <br>-->
-<!--    --><?php //endif; ?>
-<!---->
-<!--    <br><br>-->
-<!--    Если данное уведомление прислано Вам по ошибке, просьба удалите его!-->
-<!--</p>-->
-<!---->
-<!---->

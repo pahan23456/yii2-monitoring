@@ -95,8 +95,8 @@ class Monitoring extends Component
             $emailNotification = NotificationFactory::createEmailNotification($detail);
             $emailNotification->send();
 
-            $telegramNotidication = NotificationFactory::createTelegramNotification($detail);
-            $telegramNotification->send();
+//            $telegramNotidication = NotificationFactory::createTelegramNotification($detail);
+//            $telegramNotification->send();
         }
     }
 }

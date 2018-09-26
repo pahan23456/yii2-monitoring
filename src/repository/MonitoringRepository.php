@@ -47,6 +47,7 @@ class MonitoringRepository implements MonitoringRepositoryInterface
            $event = Detail::findOne(['id' => $eventId]);
 
            if (!isset($event)) {
+               Yii::error("События с $eventId не существует.");
                return false;
            }
            $detail->eventId = $event->id;
@@ -68,6 +69,7 @@ class MonitoringRepository implements MonitoringRepositoryInterface
            $commandDb = Command::findOne(['command' => $command]);
            
            if (!isset($commandDb)) {
+               Yii::error("Команды '$command' не существует.");
                return false;
            }
            $detail->commandId = $commandDb->id;

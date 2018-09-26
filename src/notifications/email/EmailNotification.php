@@ -74,7 +74,7 @@ class EmailNotification implements NotificationInterface
     public function getSubject()
     {
         if ($this->detail->status === Detail::STATUS_FAIL) {
-            return '[' . $_SERVER['SERVER_NAME'] . ']' . ' ' . $this->detail->message;
+            return '[' . Yii::$app->id . ']' . ' ' . $this->detail->message;
         }
     }
 }
