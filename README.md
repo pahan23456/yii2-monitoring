@@ -16,12 +16,23 @@ php composer.phar require --prefer-dist pahan23456/yii2-monitoring "*"
 
  php yii migrate --migrationPath=@pahan23456/monitoring/src/migrations
  
- Для того, чтобы компонент был доступен глобально из Yii::$app, пропишем его в конфиге:
+ Для того, чтобы компонент был доступен глобально из Yii::$app, пропишем его в конфиге
+ web.php и console.php
+ :
  
+ 'bootstrap' => ['queue'],
  'components' => [
          'monitoring' => [
              'class' => '\pahan23456\monitoring\Monitoring'
          ],
+         'queue' => [
+                     'class' => \yii\queue\db\Queue::class,
+                     'db' => 'db', // Компонент подключения к БД или его конфиг
+                     'tableName' => '{{%queue}}', // Имя таблицы
+                     'channel' => 'default', // Выбранный для очереди канал
+                     'mutex' => \yii\mutex\MysqlMutex::class, // Мьютекс для синхронизации запросов,
+                     'as log' => \yii\queue\LogBehavior::class,
+                 ],
         ]
 ```
 
@@ -35,14 +46,37 @@ to the require section of your `composer.json` file.
 
 Usage
 -----
-### 3 параметра, 2 из которых обязательны 
-### 1 параметр - Название события
-### 2 параметр - Приоритет события
-### 3 параметр - Массив вспомогательных данных
-### мониторинг события (старт выполнения события)
-Yii::$app->monitoring->start('Начало события', 2,);
+Внимание!!! Перед использованием расширения "Мониторинг", необходимо заполнить базу данных:
+User - люди, которым придет уведомление по email в случае ошибки;
+Group - логические группы, к которым принадлежат люди;
+Command - команды, которые необходимо мониторить, пример (rest1C.import);
+UserCommandGroup - вспомогательная таблица, которая соединяет связи.
+
+Расширение внутри себя использует расширение yiisoft/yii2-queue
+Для работы с ним, необходимо раскрыть миграции:
+ 'controllerMap' => [
+        'migrate' => [
+            'class' => 'yii\console\controllers\MigrateController',
+            'migrationPath' => null,
+            'migrationNamespaces' => [
+                'yii\queue\db\migrations',
+            ],
+        ],
+    ],
+    
+и затем выполнить yii migrate
+
+### начало события 
+$id = Yii::$app->monitoring->start('Команда', 'Начало события');
 <!-- Здесь код события -->
+### переводим статус события "в процессе" 
+Yii::$app->monitoring->start($id, 'Основной процесс события');
+<!-- Условия завершения событи -->
 ### в случае успеха
-Yii::$app->monitoring->success('Событие успешно выполнено', 2,['success' => $success]);
+Yii::$app->monitoring->success($id, 'Успешное завершение события',['success' => $success]);
 ### в случае ошибки 
-Yii::$app->monitoring->fail('Событие выполнилось с ошибкой', 2,['fail' => $fails]);
+### если, произошла ошибка, необходимо оповестить ответственных людей
+### отправка уведомлений происходит в отдельном потоке
+Yii::$app->monitoring->fail($id, 'Неуспешное завершение события',['fail' => $fails]);
+### в случае выполнения с ошибками
+Yii::$app->monitoring->withError($id, 'Выполнено с ошибками',['fail' => $fails]);
