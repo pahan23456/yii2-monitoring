@@ -29,8 +29,10 @@ class Monitoring extends Component
     public function start($command, $message, $data = null)
     {
       $detail = $this->monitoringRepository->create(Detail::STATUS_START, $message, $data, null, $command);
-
-      return $detail->id;
+      
+      if ($detail) {
+          return $detail->id;
+      }
     }
 
     /**
