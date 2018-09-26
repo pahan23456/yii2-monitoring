@@ -24,7 +24,7 @@ class User extends ActiveRecord
      */
     public static function tableName()
     {
-        return 'monitoring_user';
+        return '{{%monitoring_user}}';
     }
 
     /**

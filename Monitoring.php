@@ -87,11 +87,14 @@ class Monitoring extends Component
      *
      * @param Detail $detail
      */
-    private function sendNotification(Detail $detail)
+    private function sendNotification($detail)
     {
-        $emailNotification = NotificationFactory::createTelegramNotification($detail);
-        $telegramNotification = NotificationFactory::createTelegramNotification($detail);
-        $emailNotification->send();
-        $telegramNotification->send();
+        if ($detail) {
+            $emailNotification = NotificationFactory::createEmailNotification($detail);
+            $emailNotification->send();
+
+            $telegramNotidication = NotificationFactory::createTelegramNotification($detail);
+            $telegramNotification->send();
+        }
     }
 }

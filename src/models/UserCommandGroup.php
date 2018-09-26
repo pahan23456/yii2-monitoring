@@ -20,7 +20,7 @@ class UserCommandGroup extends ActiveRecord
      */
     public static function tableName()
     {
-        return 'monitoring_user_command_group';
+        return '{{%monitoring_user_command_group}}';
     }
 
     /**

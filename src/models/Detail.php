@@ -29,7 +29,7 @@ class Detail extends ActiveRecord
      */
     public static function tableName()
     {
-        return 'monitoring_detail';
+        return '{{%monitoring_detail}}';
     }
 
     /**

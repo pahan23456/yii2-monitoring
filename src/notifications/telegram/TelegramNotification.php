@@ -31,7 +31,9 @@ class TelegramNotification implements NotificationInterface
      */
     public function send()
     {
-        $this->sendMessage(633664978, 'Тестовое сообщение','657191984:AAFmGcViGItDVmnknDuAFQ_wJHjc7cELdTE');
+        if ($this->detail){
+            $this->sendMessage(633664978, 'Тестовое сообщение','657191984:AAFmGcViGItDVmnknDuAFQ_wJHjc7cELdTE');
+        }
     }
 
    private function sendMessage($chatID, $messaggio, $token) {

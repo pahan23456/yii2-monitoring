@@ -19,7 +19,7 @@ class Command extends ActiveRecord
      */
     public static function tableName()
     {
-        return 'monitoring_command';
+        return '{{%monitoring_command}}';
     }
 
     /**

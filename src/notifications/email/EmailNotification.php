@@ -37,8 +37,10 @@ class EmailNotification implements NotificationInterface
      */
     public function send()
     {
-        foreach ($this->users as $user) {
-            $this->sendToUser($user, $this->getSubject());
+        if ($this->detail){
+            foreach ($this->users as $user) {
+                $this->sendToUser($user, $this->getSubject());
+            }
         }
     }
 
@@ -58,6 +60,7 @@ class EmailNotification implements NotificationInterface
             'user' => $user,
             'detail' => $this->detail
         ])
+            ->setFrom([Yii::$app->params['mailerEmail'] => 'Retail'])
             ->setTo($user->email)
             ->setSubject($subject)
             ->send();
@@ -71,7 +74,7 @@ class EmailNotification implements NotificationInterface
     public function getSubject()
     {
         if ($this->detail->status === Detail::STATUS_FAIL) {
-            return 'Во время выполнения события - ' . $this->detail->command->description . ' возникла ошибка';
+            return '[' . $_SERVER['SERVER_NAME'] . ']' . ' ' . $this->detail->message;
         }
     }
 }

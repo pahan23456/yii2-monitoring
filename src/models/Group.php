@@ -19,7 +19,7 @@ class Group extends ActiveRecord
      */
     public static function tableName()
     {
-        return 'monitoring_group';
+        return '{{%monitoring_group}}';
     }
 
     /**

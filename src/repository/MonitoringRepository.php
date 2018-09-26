@@ -17,9 +17,6 @@ class MonitoringRepository implements MonitoringRepositoryInterface
        if (is_array($data))
            $detail->data = json_encode($data);
 
-       if (!Yii::$app->user->isGuest)
-           $detail->userId = Yii::$app->user->id;
-
        if (!$this->setCommandId($command, $detail))
            return false;
 
