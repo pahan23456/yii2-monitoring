@@ -69,7 +69,7 @@ class MonitoringRepository implements MonitoringRepositoryInterface
            $commandDb = Command::findOne(['command' => $command]);
            
            if (!isset($commandDb)) {
-               Yii::error("Команды '$command' не существует.");
+               Yii::error("Команды" . $command . "не существует.");
                return false;
            }
            $detail->commandId = $commandDb->id;

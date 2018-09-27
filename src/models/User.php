@@ -12,7 +12,7 @@ use yii\helpers\StringHelper;
  * @property string $firstname
  * @property string $middlename
  * @property string $email
- * @property string $telegram
+ * @property string $telegramChatId
  * @property string $creationDate
  *
  *
@@ -33,7 +33,7 @@ class User extends ActiveRecord
     public function rules()
     {
         return [
-            [['lastname, firstname, middlename', 'email', 'telegram'], 'string', 'max' => 50],
+            [['lastname, firstname, middlename', 'email', 'telegramChatId'], 'string', 'max' => 50],
             [['creationDate'], 'safe'],
         ];
     }
@@ -44,13 +44,13 @@ class User extends ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id'           => 'ID',
-            'lastname'     => 'Фамилия',
-            'fisrtname'    => 'Имя',
-            'lastname'     => 'Отчество',
-            'email'        => 'Электронная почта',
-            'telegram'     => 'Телеграм',
-            'creationDate' => 'Дата создания',
+            'id'             => 'ID',
+            'lastname'       => 'Фамилия',
+            'fisrtname'      => 'Имя',
+            'lastname'       => 'Отчество',
+            'email'          => 'Электронная почта',
+            'telegramChatId' => 'Телеграм чат идентификатор',
+            'creationDate'   => 'Дата создания',
         ];
     }
 

@@ -1,6 +1,12 @@
-Monitoring component for yii2
+Monitoring component with notifications for yii2
 =============================
-Monitoring component for yii2
+Monitoring component with notifications for yii2
+Расширение разрабатывалось для мониторинга событий в любом проекте.
+В процессе использования web-приложения, могут возникнуть нештатные ситуации, например из-за
+криво написанного кода или к примеру плохого интернет-соединения во время импорта товаров 1С.
+И для этого мы всегда сможем узнать какой метод подвел на этот раз. В расширении "Мониторинг",
+ так-же разработана фабрика уведомлений, которая отсылает уведомления на email и в телеграм в случае ошибки
+ или выполнения события с ошибками.
 
 Installation
 ------------
@@ -34,6 +40,27 @@ php composer.phar require --prefer-dist pahan23456/yii2-monitoring "*"
                      'as log' => \yii\queue\LogBehavior::class,
                  ],
         ]
+         
+ Расширение внутри себя использует расширение yiisoft/yii2-queue, драйвер можно использовать любой, в даном примере используем DbDriver
+                Для работы с ним, необходимо раскрыть миграции:
+                 'controllerMap' => [
+                        'migrate' => [
+                            'class' => 'yii\console\controllers\MigrateController',
+                            'migrationPath' => null,
+                            'migrationNamespaces' => [
+                                'yii\queue\db\migrations',
+                            ],
+                        ],
+                    ],
+                    
+                и затем выполнить yii migrate
+                
+ Внимание!!! Перед использованием расширения "Мониторинг", необходимо заполнить базу данных:
+ User - люди, которым придет уведомление по email в случае ошибки;
+ Group - логические группы, к которым принадлежат люди;
+ Command - команды, которые необходимо мониторить, пример (rest1C.import);
+UserCommandGroup - вспомогательная таблица, которая соединяет связи.
+            
 ```
 
 or add
@@ -46,26 +73,6 @@ to the require section of your `composer.json` file.
 
 Usage
 -----
-Внимание!!! Перед использованием расширения "Мониторинг", необходимо заполнить базу данных:
-User - люди, которым придет уведомление по email в случае ошибки;
-Group - логические группы, к которым принадлежат люди;
-Command - команды, которые необходимо мониторить, пример (rest1C.import);
-UserCommandGroup - вспомогательная таблица, которая соединяет связи.
-
-Расширение внутри себя использует расширение yiisoft/yii2-queue
-Для работы с ним, необходимо раскрыть миграции:
- 'controllerMap' => [
-        'migrate' => [
-            'class' => 'yii\console\controllers\MigrateController',
-            'migrationPath' => null,
-            'migrationNamespaces' => [
-                'yii\queue\db\migrations',
-            ],
-        ],
-    ],
-    
-и затем выполнить yii migrate
-
 ### начало события 
 $id = Yii::$app->monitoring->start('Команда', 'Начало события');
 <!-- Здесь код события -->

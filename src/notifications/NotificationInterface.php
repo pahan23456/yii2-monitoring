@@ -12,5 +12,4 @@ interface NotificationInterface
      * @return mixed
      */
     public function send();
-
 }

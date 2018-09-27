@@ -24,10 +24,23 @@ class EmailNotification implements NotificationInterface
      */
     private $pathMailError = '../vendor/pahan23456/yii2-monitoring/src/templates/mail/error-view.php';
 
+    /**
+     * @var string шаблон письма выполненного события с ошибками
+     */
+    private $pathMailWithError = '../vendor/pahan23456/yii2-monitoring/src/templates/mail/with-error-view.php';
+
+    /**
+     * путь шаблона, которые определяется в зависимости от статуса
+     *
+     * @var string
+     */
+    private $pathMail = '';
+
     public function __construct(Detail $detail)
     {
         $this->detail = $detail;
         $this->users = $this->detail->command->users;
+        $this->setPathMail();
     }
 
     /**
@@ -56,7 +69,7 @@ class EmailNotification implements NotificationInterface
             return false;
         }
 
-        Yii::$app->mailer->compose($this->pathMailError ,[
+        Yii::$app->mailer->compose($this->pathMail ,[
             'user' => $user,
             'detail' => $this->detail
         ])
@@ -67,14 +80,23 @@ class EmailNotification implements NotificationInterface
     }
 
     /**
-     * Воззвращает заголовок письма, в зависимости от статуса события
+     * Воззвращает заголовок письма
      *
      * @return string
      */
     public function getSubject()
     {
-        if ($this->detail->status === Detail::STATUS_FAIL) {
             return '[' . Yii::$app->id . ']' . ' ' . $this->detail->message;
+    }
+
+    /**
+     * Устанавливает путь, в зависимости от статуса события
+     */
+    public function setPathMail()
+    {
+        switch ($this->detail->status) {
+            case Detail::STATUS_FAIL: { $this->pathMail = $this->pathMailError; } break;
+            case Detail::STATUS_WITH_ERROR: { $this->pathMail = $this->pathMailWithError; } break;
         }
     }
 }

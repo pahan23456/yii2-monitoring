@@ -2,6 +2,7 @@
 namespace pahan23456\monitoring;
 
 use pahan23456\monitoring\src\jobs\EmailJob;
+use pahan23456\monitoring\src\jobs\TelegramJob;
 use pahan23456\monitoring\src\models\Detail;
 use pahan23456\monitoring\src\notifications\NotificationFactory;
 use pahan23456\monitoring\src\repository\RepositoryFactory;
@@ -82,7 +83,8 @@ class Monitoring extends Component
      */
     public function withError($eventId, $message, $data = null)
     {
-        $this->monitoringRepository->create(Detail::STATUS_WITH_ERROR, $message, $data, $eventId);
+       $detail = $this->monitoringRepository->create(Detail::STATUS_WITH_ERROR, $message, $data, $eventId);
+       $this->sendNotification($detail);
     }
 
     /**
@@ -94,6 +96,10 @@ class Monitoring extends Component
     {
         if ($detail) {
             Yii::$app->queue->push(new EmailJob([
+                'detail' => $detail
+            ]));
+            
+            Yii::$app->queue->push(new TelegramJob([
                 'detail' => $detail
             ]));
         }

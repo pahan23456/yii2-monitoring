@@ -29,7 +29,7 @@ class m180921_122136_monitoring_init extends Migration
             'firstname' => $this->string(50),
             'middlename' => $this->string(50),
             'email' => $this->string(50),
-            'telegram' => $this->string(50),
+            'telegramChatId' => $this->string(50),
             'creationDate' => $this->timestamp()
         ]);
 
