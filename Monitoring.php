@@ -11,7 +11,16 @@ use yii;
 
 class Monitoring extends Component
 {
+    /**
+     * @var RepositoryFactory
+     */
     public $monitoringRepository;
+
+    /**
+     * @var время жизни хранения событий в БД, в секунадах
+     * события хранятся в БД 30 суток!
+     */
+    private $timeLife = 2592000; // 30 дней = 2592000 секунд
 
     public function init()
     {
@@ -103,5 +112,15 @@ class Monitoring extends Component
                 'detail' => $detail
             ]));
         }
+    }
+
+    /**
+     * Возвращает время жизни событий в секундах
+     *
+     * @return время
+     */
+    public function getTimeLife()
+    {
+        return $this->timeLife;
     }
 }
