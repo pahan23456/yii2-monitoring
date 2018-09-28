@@ -64,4 +64,14 @@ class Command extends ActiveRecord
     {
         return $this->hasMany(User::className(), ['id' => 'userId'])->via('commandGroup');
     }
+
+    /**
+     * Возвращает детали выполнения для текущей команды
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getLastDetail()
+    {
+        return $this->hasMany(Detail::className(), ['commandId' => 'id'])->orderBy(['id' => SORT_DESC])->one();
+    }
 }

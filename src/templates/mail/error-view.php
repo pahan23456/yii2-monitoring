@@ -59,7 +59,7 @@
                                             </tr>
                                             <tr style="background:#e0e0e0;">
                                                 <td>Время события</td>
-                                                <td><?= $detail->creationDate ?></td>
+                                                <td><?= $detail->creationDate?>
                                             </tr>
                                         </table>
                                     </td>
@@ -76,9 +76,15 @@
                                 <tr>
                                     <td>
                                         <ul>
-                                            <?php if (!empty($detail->data)): ?>
-                                            <li><?= $detail->data ?></li>
-                                            <?php endif; ?>
+                                            <?php if (!empty($detail->data)) { ?>
+                                                <?php $messages = json_decode($detail->data);
+                                                foreach ($messages as $key => $value):
+                                                    ?>
+                                                    <li><?= $key ?> - <?= $value ?></li>
+                                                <?php
+                                                endforeach;
+                                            }
+                                            ?>
                                         </ul>
                                     </td>
                                 </tr>
