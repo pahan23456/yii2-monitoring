@@ -51,7 +51,7 @@
                                             </tr>
                                             <tr style="background:#e0e0e0;">
                                                 <td>Статус</td>
-                                                <td style="color: #ffffff; background: #ff0000"><?= $detail->status ?></td>
+                                                <td style="color: #ffffff; background: #ff0000">Ошибка</td>
                                             </tr>
                                             <tr>
                                                 <td>Причина</td>

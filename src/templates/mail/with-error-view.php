@@ -51,7 +51,7 @@
                                             </tr>
                                             <tr style="background:#e0e0e0;">
                                                 <td>Статус</td>
-                                                <td style="color: #ffffff; background: #FF9800;0"><?= $detail->status ?></td>
+                                                <td style="color: #ffffff; background: #FF9800;0">С ошибкой</td>
                                             </tr>
                                             <tr>
                                                 <td>Причина</td>
@@ -76,9 +76,19 @@
                                 <tr>
                                     <td>
                                         <ul>
-                                            <?php if (!empty($detail->data)): ?>
-                                                <li><?= $detail->data ?></li>
-                                            <?php endif; ?>
+                                            <?php
+                                            $errors = \pahan23456\monitoring\src\models\Detail::find()
+                                                ->where(['eventId' => $detail->eventId])
+                                                ->andWhere(['status' => \pahan23456\monitoring\src\models\Detail::STATUS_IN_PROCESS])
+                                                ->andFilterWhere(['like', 'data', 'error'])
+                                                ->all();
+                                            if (isset($errors)):
+                                            foreach ($errors as $error):
+                                            ?>
+                                                <li><?= $error->message ?></li>
+                                            <?php endforeach;
+                                            endif;
+                                            ?>
                                         </ul>
                                     </td>
                                 </tr>
