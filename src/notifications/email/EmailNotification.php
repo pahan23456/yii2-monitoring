@@ -72,8 +72,7 @@ class EmailNotification implements NotificationInterface
         Yii::$app->mailer->compose($this->pathMail ,[
             'user' => $user,
             'detail' => $this->detail
-        ])->setFrom([Yii::$app->params['mailerEmail'] => 'Retail'])
-            ->setTo($user->email)
+        ])->setTo($user->email)
             ->setSubject($subject)
             ->send();
     }
