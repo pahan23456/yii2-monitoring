@@ -68,7 +68,7 @@ class EmailNotification implements NotificationInterface
         if (empty($user->email)) {
             return false;
         }
-
+        
         Yii::$app->mailer->compose($this->pathMail ,[
             'user' => $user,
             'detail' => $this->detail

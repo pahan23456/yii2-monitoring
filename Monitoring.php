@@ -1,8 +1,6 @@
 <?php
 namespace pahan23456\monitoring;
 
-use pahan23456\monitoring\src\jobs\EmailJob;
-use pahan23456\monitoring\src\jobs\TelegramJob;
 use pahan23456\monitoring\src\models\Detail;
 use pahan23456\monitoring\src\notifications\NotificationFactory;
 use pahan23456\monitoring\src\repository\RepositoryFactory;
@@ -104,13 +102,11 @@ class Monitoring extends Component
     private function sendNotification($detail)
     {
         if ($detail) {
-            Yii::$app->queue->push(new EmailJob([
-                'detail' => $detail
-            ]));
-            
-            Yii::$app->queue->push(new TelegramJob([
-                'detail' => $detail
-            ]));
+            $emailNotification = NotificationFactory::createEmailNotification($detail);
+            $emailNotification->send();
+
+            $telegramNotification = NotificationFactory::createTelegramNotification($detail);
+            $telegramNotification->send();
         }
     }
 
