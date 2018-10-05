@@ -2,6 +2,7 @@
 namespace pahan23456\monitoring\src\commands;
 
 use pahan23456\monitoring\src\models\Detail;
+use pahan23456\monitoring\src\notifications\NotificationFactory;
 use yii\console\Controller;
 use Yii;
 use pahan23456\monitoring\src\models\Command;
@@ -97,13 +98,11 @@ class MonitoringController extends Controller
         $detail->creationDate = date('Y.m.d H:i:s');
 
         if ($detail->save()) {
-            Yii::$app->queue->push(new EmailJob([
-                'detail' => $detail
-            ]));
+            $emailNotification = NotificationFactory::createEmailNotification($detail);
+            $emailNotification->send();
 
-            Yii::$app->queue->push(new TelegramJob([
-                'detail' => $detail
-            ]));
+            $telegramNotification = NotificationFactory::createTelegramNotification($detail);
+            $telegramNotification->send();
             $this->stdout("Notification of a non-working command: {$command->command} sent.\n", Console::BG_PURPLE);
         }
     }
