@@ -68,8 +68,11 @@ class MonitoringController extends Controller
         }
         $detail = $command->lastDetail;
 
-        if (!isset($detail))
+        if (!isset($detail)) {
             $this->stdout("Command: {$commandName} never used.\n", Console::BG_RED);
+            return false;
+        }
+
 
         if ($this->isOldDetail($detail, $frequencyExecution)) {
             $this->stdout("Command: {$commandName} not worked by set time.\nCommand needs be notified.\n", Console::BG_RED);
