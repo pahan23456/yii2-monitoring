@@ -96,16 +96,17 @@ class EmailNotification implements NotificationInterface
     {
         switch ($this->detail->status) {
             case Detail::STATUS_FAIL: { $this->pathMail = $this->pathMailError; } break;
-            case Detail::STATUS_WITH_ERROR: { $this->pathMail = $this->pathMailWithError;
+            case Detail::STATUS_WITH_ERROR: {
                 if ($this->detail->command->command == 'rest1c.commands.DefaultController.actionIndex') {
                     $errors = Detail::find()
                         ->where(['eventId' => $this->detail->eventId])
                         ->andWhere(['status' => Detail::STATUS_IN_PROCESS])
-                        ->andFilterWhere(['like', 'data', 'error'])
+                        ->FilterWhere(['like', 'data', 'error'])
                         ->andFilterWhere(['like', 'data', '"isHidden":0'])
                         ->all();
 
-                    if (!isset($errors)) return false;
+                    if (!isset($errors) && empty($errors)) return false;
+                    $this->pathMail = $this->pathMailWithError;
                 }} break;
         }
     }
