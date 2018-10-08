@@ -81,6 +81,7 @@
                                                 ->where(['eventId' => $detail->eventId])
                                                 ->andWhere(['status' => \pahan23456\monitoring\src\models\Detail::STATUS_IN_PROCESS])
                                                 ->andFilterWhere(['like', 'data', 'error'])
+                                                ->andFilterWhere(['like', 'data', '"isHidden":0'])
                                                 ->all();
                                             if (isset($errors)):
                                             foreach ($errors as $error):

@@ -68,7 +68,9 @@ class EmailNotification implements NotificationInterface
         if (empty($user->email)) {
             return false;
         }
-        
+
+        if (empty($this->pathMail)) return false;
+
         Yii::$app->mailer->compose($this->pathMail ,[
             'user' => $user,
             'detail' => $this->detail
@@ -84,7 +86,7 @@ class EmailNotification implements NotificationInterface
      */
     public function getSubject()
     {
-            return '[' . Yii::$app->id . ']' . ' ' . $this->detail->message;
+        return '[' . Yii::$app->id . ']' . ' ' . $this->detail->message;
     }
 
     /**
@@ -94,7 +96,17 @@ class EmailNotification implements NotificationInterface
     {
         switch ($this->detail->status) {
             case Detail::STATUS_FAIL: { $this->pathMail = $this->pathMailError; } break;
-            case Detail::STATUS_WITH_ERROR: { $this->pathMail = $this->pathMailWithError; } break;
+            case Detail::STATUS_WITH_ERROR: { $this->pathMail = $this->pathMailWithError;
+                if ($this->detail->command->command == 'rest1c.commands.DefaultController.actionIndex') {
+                    $errors = Detail::find()
+                        ->where(['eventId' => $this->detail->eventId])
+                        ->andWhere(['status' => Detail::STATUS_IN_PROCESS])
+                        ->andFilterWhere(['like', 'data', 'error'])
+                        ->andFilterWhere(['like', 'data', '"isHidden":0'])
+                        ->all();
+
+                    if (!isset($errors)) return false;
+                }} break;
         }
     }
 }
