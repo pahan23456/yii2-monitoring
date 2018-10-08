@@ -105,7 +105,7 @@ class EmailNotification implements NotificationInterface
                         ->andFilterWhere(['like', 'data', '"isHidden":0'])
                         ->all();
 
-                    if (!isset($errors) && empty($errors)) return false;
+                    if (!isset($errors) || empty($errors)) return false;
                 }
                 $this->pathMail = $this->pathMailWithError;} break;
         }
