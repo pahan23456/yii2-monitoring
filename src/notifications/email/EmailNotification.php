@@ -106,8 +106,8 @@ class EmailNotification implements NotificationInterface
                         ->all();
 
                     if (!isset($errors) && empty($errors)) return false;
-                    $this->pathMail = $this->pathMailWithError;
-                }} break;
+                }
+                $this->pathMail = $this->pathMailWithError;} break;
         }
     }
 }
